@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>魔法棒用户自定义设置页面</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com">
+    <script defer src="./options.js"></script>
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="card m-2">
+        <div class="card-header">
+            魔法棒用户自定义管理
+        </div>
+        <div class="card-body">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="menu_bar_position">语音工具栏位置:</label>
+                <select class="form-select" id="menu_bar_position" name="menu_bar_position">
+                    <option value="left">左边</option>
+                    <option value="bottom">下边</option>
+                    <option value="right">右边</option>
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="show_menu_bar_flag">清洁魔法棒是否显示语音工具栏:</label>
+                <select class="form-select" id="show_menu_bar_flag" name="show_menu_bar_flag">
+                    <option value="true">是（建议）</option>
+                    <option value="false">不是</option>
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="interval_monitor">每隔一段时间监听没连线(秒):</label>
+                <select class="form-select" id="interval_monitor" name="interval_monitor">
+                    <option value="15">15秒</option>
+                    <option value="30">30秒</option>
+                    <option value="45">45秒</option>
+                    <option value="60">60秒</option>
+                </select>
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="ui_switch_flag">UI适用开关:</label>
+                </div>
+                <div class="m-lg-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="ui_switch_flag" name="ui_switch_flag">
+                    </div>
+                </div>
+            </div>
+            <button id="save" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+
+    <ul class="list-group m-2">
+        <li class="list-group-item">
+            1.4
+            <div>
+                添加连线监听。
+                添加用户自定义设置画面。
+            </div>
+        </li>
+        <li class="list-group-item">
+            1.3
+            <div>
+                优化用户体验。
+            </div>
+        </li>
+        <li class="list-group-item">
+            1.2
+            <div>
+                修改UI的式样。
+            </div>
+        </li>
+        <li class="list-group-item">
+            1.1
+            <div>
+                构建模型。
+            </div>
+        </li>
+    </ul>
+</body>
+</html>
