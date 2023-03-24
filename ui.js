@@ -1,6 +1,6 @@
 // 加载时有加载动画，延迟修改UI。（默认时8秒后执行）
 setTimeout(async () => {
-  return chrome.storage.local.get(['menu_bar_position', 'show_menu_bar_flag', 'ui_switch_flag'], (result) => {
+  return chrome.storage.local.get(['menu_bar_position', 'show_menu_bar_flag', 'interval_monitor', 'ui_switch_flag'], (result) => {
     const menuBarPosition = result.menu_bar_position || 'left';
     const showMenuBarFlag = result.show_menu_bar_flag || 'true';
     const intervalMonitor = result.interval_monitor || '30';
@@ -59,12 +59,10 @@ const init = (p) => {
         break;
       case '45':
         s = 45;
-        break
+        break;
       case '60':
         s = 60;
         break;
-      default:
-        s = 30;
     }
     // 设置每隔一段时间执行一次监听是否连线
     setInterval(checkLv, s * 1000);
@@ -117,10 +115,12 @@ const init = (p) => {
     }
   };
 
-  // 添加自定义style标签（将按钮逆时针旋转用）
-  var style = document.createElement('style');
-  document.head.appendChild(style);
-  style.sheet.insertRule('#MenuBar button { transform:rotate(-90deg); }');
+  if (p.menuBarPosition === 'left' || p.menuBarPosition === 'right') {
+    // 添加自定义style标签（将按钮逆时针旋转用）
+    var style = document.createElement('style');
+    document.head.appendChild(style);
+    style.sheet.insertRule('#MenuBar button { transform:rotate(-90deg); }');
+  }
 
   var floorBar = document.getElementsByClassName(
       'MuiPaper-root MuiPaper-outlined MuiPaper-rounded'
@@ -146,7 +146,6 @@ const init = (p) => {
       menuBar.style.transform = 'rotate(90deg)';
       break;
   }
-
 
   // 右下角的工具栏
   var toolBar = document.getElementsByClassName(
