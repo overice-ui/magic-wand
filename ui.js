@@ -41,7 +41,7 @@ const init = (p) => {
     Notification.requestPermission().then(function (permission) {
       // 如果用户允许通知，则创建并显示通知
       if (permission === 'granted') {
-        new Notification('感谢使用魔法棒UI 1.4', {
+        new Notification('感谢使用魔法棒UI 1.5', {
           body: 'UI已经适用。请慢慢体验。'
         });
       }
@@ -120,28 +120,43 @@ const init = (p) => {
       self.clickFlag = false;
     }
   };
+  
+  var statusMenuAvatarName = document.getElementById('status-menu-avatar-name');
+  var statusMenuAvatarStatus = statusMenuAvatarName.nextElementSibling;
+  var statusMenuAvatarBar = statusMenuAvatarName.parentNode;
 
   if (p.menuBarPosition === 'left' || p.menuBarPosition === 'right') {
     // 添加自定义style标签（将按钮逆时针旋转用）
     var style = document.createElement('style');
     document.head.appendChild(style);
-    style.sheet.insertRule('#MenuBar button { transform:rotate(-90deg); }');
+    style.sheet.insertRule('#MenuBar > div > button:not(:first-child) { transform:rotate(-90deg);}');
+    style.sheet.insertRule('#MenuBar > div > div > button { transform:rotate(-90deg); }');
+    style.sheet.insertRule('#status-button img { transform:rotate(-90deg); }');
+    style.sheet.insertRule('#status-menu { transform:rotate(-90deg); }');
+
+    statusMenuAvatarName.style.maxHeight = '98px';
+    statusMenuAvatarName.style.maxWidth = 'none';
+    statusMenuAvatarName.style.writingMode = 'vertical-rl';
+    statusMenuAvatarStatus.style.display = 'inline-block';
+    statusMenuAvatarStatus.style.writingMode = 'vertical-rl';
+    statusMenuAvatarBar.style.transform = 'rotate(-90deg)';
+    statusMenuAvatarBar.style.paddingTop = '35px';
+    statusMenuAvatarBar.style.paddingLeft = '0';
+    statusMenuAvatarBar.style.display = 'inline-block';
   }
 
-  var floorBar = document.getElementsByClassName(
-      'MuiPaper-root MuiPaper-outlined MuiPaper-rounded'
-  )[0];
-  floorBar.style.top = '20%';
+  var currentElement = document.getElementById('openspace_scrollable');
+  var floorBar = currentElement.nextSibling;;
+  floorBar.style.bottom = 'calc(100% - 150px)';
 
   var menuBar = document.getElementById('MenuBar');
-
 
   switch (p.menuBarPosition) {
     // 给正下面的操作列表的列表览添加式样,将移动到最左边（共有画面时会遮住画面）
     case 'left':
       menuBar.style.position = 'absolute';
       menuBar.style.left = '0';
-      menuBar.style.top = 'calc(50% + 100px)';
+      menuBar.style.top = 'calc(50% + 120px)';
       menuBar.style.transform = 'rotate(90deg)';
       break;
     // 给正下面的操作列表的列表览添加式样,将移动到最右边（共有画面时会遮住画面）
