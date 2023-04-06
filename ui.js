@@ -140,7 +140,7 @@ const init = (p) => {
     statusMenuAvatarStatus.style.display = 'inline-block';
     statusMenuAvatarStatus.style.writingMode = 'vertical-rl';
     statusMenuAvatarBar.style.transform = 'rotate(-90deg)';
-    statusMenuAvatarBar.style.paddingTop = '35px';
+    statusMenuAvatarBar.style.paddingTop = '70px';
     statusMenuAvatarBar.style.paddingLeft = '0';
     statusMenuAvatarBar.style.display = 'inline-block';
   }
