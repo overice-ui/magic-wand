@@ -4,7 +4,7 @@ setTimeout(async () => {
     const menuBarPosition = result.menu_bar_position || 'left';
     const showMenuBarFlag = result.show_menu_bar_flag || 'true';
     const intervalMonitor = result.interval_monitor || '30';
-    const uiSwitchFlag = result.ui_switch_flag;
+    const uiSwitchFlag = result.ui_switch_flag === undefined? true : result.ui_switch_flag;
 
     if (uiSwitchFlag) {
       init({
