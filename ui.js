@@ -20,8 +20,13 @@ setTimeout(async () => {
 const checkLv = () => {
   var lv = document.getElementsByClassName('MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-sizeSmall')[0];
   if (!lv) {
-    new Notification('ovice你没有连线！', {
-      body: '警告：你没有连线，这样会导致别人听不见你说话。'
+    Notification.requestPermission().then(function (permission) {
+      // 如果用户允许通知，则创建并显示通知
+      if (permission === 'granted') {
+        new Notification('ovice你没有连线！', {
+          body: '警告：你没有连线，这样会导致别人听不见你说话。'
+        });
+      }
     });
   }
 }
@@ -64,6 +69,7 @@ const init = (p) => {
         s = 60;
         break;
     }
+
     // 设置每隔一段时间执行一次监听是否连线
     setInterval(checkLv, s * 1000);
     lvFlag = true;

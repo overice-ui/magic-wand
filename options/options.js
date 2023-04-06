@@ -7,7 +7,7 @@ if (typeof window !== 'undefined') {
             document.querySelector('#menu_bar_position').value = result.menu_bar_position || 'left';
             document.querySelector('#show_menu_bar_flag').value = result.show_menu_bar_flag || 'true';
             document.querySelector('#interval_monitor').value = result.interval_monitor || '30';
-            document.querySelector('#ui_switch_flag').checked = result.ui_switch_flag;
+            document.querySelector('#ui_switch_flag').checked = result.ui_switch_flag === undefined? true : result.ui_switch_flag;
         });
     });
 
