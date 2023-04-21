@@ -130,7 +130,7 @@ const init = (p) => {
     var style = document.createElement('style');
     document.head.appendChild(style);
     style.sheet.insertRule('#MenuBar > div > button:not(:first-child) { transform:rotate(-90deg);}');
-    style.sheet.insertRule('#MenuBar > div > div > button { transform:rotate(-90deg); }');
+    style.sheet.insertRule('#MenuBar > div > div svg { transform:rotate(-90deg); }');
     style.sheet.insertRule('#status-button img { transform:rotate(-90deg); }');
     style.sheet.insertRule('#status-menu { transform:rotate(-90deg); }');
 
