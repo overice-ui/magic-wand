@@ -1,3 +1,5 @@
+// 获取当前插件ID
+const myExtensionId = chrome.runtime.id;
 // 加载时有加载动画，延迟修改UI。（默认时8秒后执行）
 setTimeout(async () => {
   return chrome.storage.local.get(['menu_bar_position', 'show_menu_bar_flag', 'interval_monitor', 'ui_switch_flag'], (result) => {
@@ -31,17 +33,135 @@ const checkLv = () => {
   }
 }
 
+// 设定天气情报
+const setWeatherForecast = () => {
+  // 获取当前经纬度，默认五反田
+  let latitude = "35.6253696";
+  let longitude = "139.722752";
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+    });
+  } else {
+    latitude = "35.6253696";
+    longitude = "139.722752";
+  }
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weathercode&forecast_days=1&timezone=Asia%2FTokyo&current_weather=true`);
+  xhr.send();
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      let weatherDom = document.getElementById("weather")
+
+      let data = JSON.parse(xhr.responseText);
+      let t = "";
+      let iconString = "";
+      switch (data.current_weather.weathercode) {
+        case 0:
+          t = "晴朗的天空";
+          iconString = "sun64";
+          break;
+        case 1:
+          t = "晴转多云";
+          iconString = "cloudy64";
+          break;
+        case 2:
+          t = "少云";
+          iconString = "cloud64";
+          break;
+        case 3:
+          t = "多云";
+          iconString = "clouds64";
+          break;
+        case 45:
+        case 48:
+          t = "雾";
+          iconString = "fog64";
+          break;
+        case 51:
+        case 53:
+        case 55:
+          t = "毛毛雨";
+          iconString = "rainym64";
+          break;
+        case 56:
+        case 57:
+          t = "毛绒雪";
+          iconString = "snowy64";
+          break;
+        case 61:
+        case 63:
+        case 65:
+          t = "下雨";
+          iconString = "rainym64";
+          break;
+        case 66:
+        case 67:
+          t = "冰雨";
+          iconString = "rainym64";
+          break;
+        case 71:
+        case 73:
+        case 75:
+        case 77:
+          t = "雪";
+          iconString = "snowy64";
+          break;
+      }
+
+      let umbrellaDom = "";
+      for(let i = 0; i <= data?.hourly?.precipitation_probability.length; i++) {
+        console.log(data?.hourly?.precipitation_probability[i])
+        if (data?.hourly?.precipitation_probability[i] > 20) {
+          umbrellaDom = `
+          <div style="display: inline-block">
+            <div>
+              今天的 ${i}:00 \n
+            </div>
+            <div>
+              ${data?.hourly?.precipitation_probability[i]}%概率下雨
+            </div>
+          </div>
+          <div style="display: inline-block">
+            <img style="height: 40px;" src="chrome-extension://${myExtensionId}/public/icons/umbrella64.png"></img>
+          </div>`;
+          break;
+        }
+      }
+
+      weatherDom.innerHTML = `
+        <div style="display: inline-block">
+          <div>
+            ${data.current_weather.temperature}°C
+          </div>
+          <div>
+            ${t}
+          </div>
+        </div>
+        <div style="display: inline-block">
+          <img style="height: 40px; margin-right: 20px;" src="chrome-extension://${myExtensionId}/public/icons/${iconString}.png"></img>
+        </div>
+        ${umbrellaDom}
+      `;
+    }
+  };
+}
+
 const init = (p) => {
   var self = this;
   self.clickFlag = false;
-  var lvFlag = false
+  var lvFlag = false;
+  var setWeatherForecastFlag = false;
   // 检查浏览器是否支持Web Notifications API
   if ('Notification' in window) {
     // 请求通知权限
     Notification.requestPermission().then(function (permission) {
       // 如果用户允许通知，则创建并显示通知
       if (permission === 'granted') {
-        new Notification('感谢使用魔法棒UI 1.5', {
+        new Notification('感谢使用魔法棒UI 1.6', {
           body: 'UI已经适用。请慢慢体验。'
         });
       }
@@ -129,8 +249,9 @@ const init = (p) => {
     // 添加自定义style标签（将按钮逆时针旋转用）
     var style = document.createElement('style');
     document.head.appendChild(style);
-    style.sheet.insertRule('#MenuBar > div > button:not(:first-child) { transform:rotate(-90deg);}');
-    style.sheet.insertRule('#MenuBar > div > div svg { transform:rotate(-90deg); }');
+    style.sheet.insertRule(`#MenuBar > div > button:not(:first-child), #MenuBar > div > div svg, #MenuBar > div:first-child > div > button{
+      transform:rotate(-90deg);}`
+    );
     style.sheet.insertRule('#status-button img { transform:rotate(-90deg); }');
     style.sheet.insertRule('#status-menu { transform:rotate(-90deg); }');
 
@@ -146,7 +267,7 @@ const init = (p) => {
   }
 
   var currentElement = document.getElementById('openspace_scrollable');
-  var floorBar = currentElement.nextSibling;;
+  var floorBar = currentElement.nextSibling;
   floorBar.style.bottom = 'calc(100% - 150px)';
 
   var menuBar = document.getElementById('MenuBar');
@@ -168,6 +289,29 @@ const init = (p) => {
       break;
   }
 
+  // 创建天气容器
+  var newWeatherDom = document.createElement('div');
+  newWeatherDom.id = "weather";
+  newWeatherDom.style.color = "#000000";
+  newWeatherDom.style.marginRight = "20px";
+  header.firstElementChild.insertBefore(newWeatherDom, header.firstElementChild.lastElementChild);
+
+  if (setWeatherForecastFlag === false) {
+    // 加载画面时获取天气
+    setWeatherForecast();
+
+    const now = new Date();
+    const nextHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 5, 0);
+    const timeToNextHour = nextHour - now;
+    setTimeout(function() {
+      // 下一个准点获取天气信息
+      setWeatherForecast();
+      // 每一个整点设置一次天气
+      setInterval(setWeatherForecast, 3600 * 1000);
+      setWeatherForecastFlag = true;
+    }, timeToNextHour);
+  }
+  
   // 右下角的工具栏
   var toolBar = document.getElementsByClassName(
       'MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root'

@@ -1,13 +1,31 @@
 {
   "manifest_version": 3,
   "name": "Ovice UI美化",
-  "version": "1.5",
+  "version": "1.6",
   "options_page": "./options/options.html",
   "permissions": ["storage"],
   "icons": {
     "16": "public/icons/magic-wand16.png",
     "128": "public/icons/magic-wand128.png"
   },
+  "web_accessible_resources": [
+    {
+      "resources": [
+          "public/icons/cloud64.png",
+          "public/icons/clouds64.png",
+          "public/icons/cloudy64.png",
+          "public/icons/fog64.png",
+          "public/icons/hail64.png",
+          "public/icons/rainyl64.png",
+          "public/icons/rainym64.png",
+          "public/icons/snowy64.png",
+          "public/icons/sun64.png",
+          "public/icons/thunderstorm64.png",
+          "public/icons/umbrella64.png"
+      ],
+      "matches": ["https://paylab-2f.ovice.in/*"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["https://paylab-2f.ovice.in/*"],
