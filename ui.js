@@ -113,8 +113,7 @@ const setWeatherForecast = () => {
       }
 
       let umbrellaDom = "";
-      for(let i = 0; i <= data?.hourly?.precipitation_probability.length; i++) {
-        console.log(data?.hourly?.precipitation_probability[i])
+      for(let i = new Date().getHours(); i <= data?.hourly?.precipitation_probability.length; i++) {
         if (data?.hourly?.precipitation_probability[i] > 20) {
           umbrellaDom = `
           <div style="display: inline-block">
